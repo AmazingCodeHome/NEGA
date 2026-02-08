@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
   },
 
   // Internationalization
-  internationalization: {
+  i18n: {
     locales: ["en", "zh"],
     defaultLocale: "en",
   },
