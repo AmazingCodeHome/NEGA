@@ -58,15 +58,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Internationalization
-  i18n: {
-    locales: ["en", "zh"],
-    defaultLocale: "en",
-  },
-
-  // Compression
-  compress: true,
-
   // React strict mode for development
   reactStrictMode: true,
 };
