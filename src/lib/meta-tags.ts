@@ -26,7 +26,7 @@ export function generateMetaTags(config: MetaTagsConfig) {
     locale = "en-US",
   } = config;
 
-  const baseUrl = "https://negaapp.com";
+  const baseUrl = "https://nega.inkcraft.cn";
   const canonicalUrl = slug ? `${baseUrl}/${slug}` : baseUrl;
 
   return {

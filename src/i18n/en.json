@@ -15,7 +15,13 @@
     "language": "Language",
     "dark": "Dark",
     "light": "Light",
-    "system": "System"
+    "system": "System",
+    "signIn": "Sign in with InkCraft account",
+    "signOut": "Log out",
+    "limitNote": "Sign in for unlimited sessions. Guests are limited to 3 rounds.",
+    "userAgreement": "User Agreement",
+    "limitReached": "Daily limit reached for guests. Sign in for unlimited chats!",
+    "limitReachedSubtitle": "Keep the conversation going with a free account."
   },
   "home": {
     "welcome": "Welcome to NEGA",

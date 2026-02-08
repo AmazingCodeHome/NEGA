@@ -111,7 +111,7 @@ H3 (小标题): 24-28px, 权重: 600
 
 ### 网站
 - **类型**: Web应用 + 信息网站
-- **主URL**: negaapp.com
+- **主URL**: nega.inkcraft.cn
 - **Logo位置**: 左上角header内
 - **Favicon**: icon-logo.svg (64x64及以上)
 
@@ -323,9 +323,9 @@ Logo周围需要保留清晰空间，至少为logo高度的 25%
 
 ## 联系和支持 (Contact & Support)
 
-**品牌咨询**: brand@negaapp.com  
-**技术支持**: support@negaapp.com  
-**营销合作**: marketing@negaapp.com
+**品牌咨询**: brand@nega.inkcraft.cn  
+**技术支持**: support@nega.inkcraft.cn  
+**营销合作**: marketing@nega.inkcraft.cn
 
 **社交媒体**:
 - Twitter: @negaapp

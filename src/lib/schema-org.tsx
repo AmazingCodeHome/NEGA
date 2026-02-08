@@ -26,12 +26,12 @@ export function JsonLD({ data }: JsonLdProps) {
 export const organizationSchema: SchemaOrgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "@id": "https://negaapp.com/#organization",
+  "@id": "https://nega.inkcraft.cn/#organization",
   name: "NEGA",
-  url: "https://negaapp.com",
+  url: "https://nega.inkcraft.cn",
   logo: {
     "@type": "ImageObject",
-    url: "https://negaapp.com/logo-with-text.svg",
+    url: "https://nega.inkcraft.cn/logo-with-text.svg",
     width: 240,
     height: 80,
   },
@@ -45,8 +45,8 @@ export const organizationSchema: SchemaOrgJsonLd = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "Customer Support",
-    email: "support@negaapp.com",
-    url: "https://negaapp.com",
+    email: "support@nega.inkcraft.cn",
+    url: "https://nega.inkcraft.cn",
   },
 };
 
@@ -54,11 +54,11 @@ export const organizationSchema: SchemaOrgJsonLd = {
 export const webApplicationSchema: SchemaOrgJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "@id": "https://negaapp.com/#app",
+  "@id": "https://nega.inkcraft.cn/#app",
   name: "NEGA",
   description:
     "AI-powered English Grammar Assistant and Native Speaker Oral Coach",
-  url: "https://negaapp.com",
+  url: "https://nega.inkcraft.cn",
   applicationCategory: "EducationalApplication",
   offers: {
     "@type": "Offer",
@@ -97,19 +97,19 @@ export const breadcrumbSchema: SchemaOrgJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://negaapp.com",
+      item: "https://nega.inkcraft.cn",
     },
     {
       "@type": "ListItem",
       position: 2,
       name: "English Learning",
-      item: "https://negaapp.com/learn",
+      item: "https://nega.inkcraft.cn/learn",
     },
     {
       "@type": "ListItem",
       position: 3,
       name: "Grammar Assistant",
-      item: "https://negaapp.com/grammar",
+      item: "https://nega.inkcraft.cn/grammar",
     },
   ],
 };

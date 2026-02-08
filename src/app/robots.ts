@@ -19,9 +19,9 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: [
-      "https://negaapp.com/sitemap.xml",
-      "https://negaapp.com/sitemap-en.xml",
-      "https://negaapp.com/sitemap-zh.xml",
+      "https://nega.inkcraft.cn/sitemap.xml",
+      "https://nega.inkcraft.cn/sitemap-en.xml",
+      "https://nega.inkcraft.cn/sitemap-zh.xml",
     ],
   };
 }

@@ -56,13 +56,13 @@ npm run start
 ### 2. 验证SEO文件
 ```bash
 # 检查Robots.txt
-curl https://negaapp.com/robots.txt
+curl https://nega.inkcraft.cn/robots.txt
 
 # 检查Sitemap
-curl https://negaapp.com/sitemap.xml
+curl https://nega.inkcraft.cn/sitemap.xml
 
 # 检查Logo
-# 访问: https://negaapp.com/logo-with-text.svg
+# 访问: https://nega.inkcraft.cn/logo-with-text.svg
 ```
 
 ### 3. 提交搜索引擎
@@ -335,8 +335,8 @@ A: 当前配置支持英文和中文，易于扩展其他语言。
 
 ## 📞 相关链接
 
-- 🌐 **网站**: https://negaapp.com
-- 📧 **邮件**: support@negaapp.com
+- 🌐 **网站**: https://nega.inkcraft.cn
+- 📧 **邮件**: support@nega.inkcraft.cn
 - 🐦 **Twitter**: @negaapp
 - 💼 **LinkedIn**: NEGA
 - 🐙 **GitHub**: github.com/negaapp

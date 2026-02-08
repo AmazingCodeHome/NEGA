@@ -31,6 +31,9 @@ import {
 import { motion, AnimatePresence, useSpring } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 import { useTheme } from "next-themes";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Avatar } from "@heroui/react";
+import { LogOut, LogIn } from "lucide-react";
 import { isBrowserSpeechRecognitionSupported, createLiveSpeechRecognition } from "@/lib/browser-speech";
 
 export default function VoiceChat({
@@ -40,7 +43,13 @@ export default function VoiceChat({
 }) {
   const { dict, language, setLanguage } = useI18n();
   const { theme, setTheme } = useTheme();
+  const { data: session } = useSession();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { 
+    isOpen: isAgreementOpen, 
+    onOpen: onAgreementOpen, 
+    onOpenChange: onAgreementOpenChange 
+  } = useDisclosure();
   const [mounted, setMounted] = useState(false);
 
   // State
@@ -52,6 +61,14 @@ export default function VoiceChat({
     "listening",
   );
   const [audioLevel, setAudioLevel] = useState(0);
+  const [isLimitReached, setIsLimitReached] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      setIsLimitReached(false);
+    }
+  }, [session]);
+
   const springLevels = [
     useSpring(0, { stiffness: 200, damping: 20 }),
     useSpring(0, { stiffness: 200, damping: 20 }),
@@ -469,6 +486,7 @@ export default function VoiceChat({
   };
 
   const processVoiceInput = async (audioBlob: Blob, browserText?: string) => {
+    if (isLimitReached) return;
     if (audioBlob.size === 0 && !browserText) {
       console.warn("Empty audio blob received");
       return;
@@ -785,6 +803,19 @@ export default function VoiceChat({
     });
 
     if (!chatRes.ok || !chatRes.body) {
+      const errorData = await chatRes.json().catch(() => ({}));
+      if (errorData.error === "LIMIT_REACHED") {
+        setIsLimitReached(true);
+        const limitMsg = dict.common.limitReached;
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: limitMsg },
+        ]);
+        setCurrentSubtitle(limitMsg);
+        // Play the limit reached message via TTS if possible, or just show it
+        void fetchTtsUrl(limitMsg).then(url => playAudioUrl(url));
+        return;
+      }
       console.error("Chat API error:", chatRes.statusText);
       throw new Error("Chat failed");
     }
@@ -1000,7 +1031,7 @@ export default function VoiceChat({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col items-center space-y-10"
+              className="flex flex-col items-center space-y-8"
             >
               <Button
                 size="lg"
@@ -1028,16 +1059,90 @@ export default function VoiceChat({
                 </span>
               </Button>
 
-              <div className="flex items-center gap-6 p-2 bg-foreground/5 rounded-full backdrop-blur-md">
+              <div className="flex flex-col items-center space-y-6">
+                {!session && (
+                  <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] bg-foreground/5 px-6 py-2.5 rounded-full border border-foreground/5"
+                  >
+                    🚀 {dict.common.limitNote}
+                  </motion.p>
+                )}
+                <div className="flex items-center gap-4 p-2 bg-foreground/5 rounded-full backdrop-blur-md border border-foreground/5 shadow-inner">
+                {session ? (
+                  <Dropdown placement="top" offset={12} className="bg-background/80 backdrop-blur-xl border border-foreground/10 rounded-2xl shadow-2xl">
+                    <DropdownTrigger>
+                      <button className="outline-none">
+                        <Avatar
+                          isBordered
+                          as="div"
+                          className="w-10 h-10 transition-all hover:scale-105 active:scale-95 cursor-pointer border-2 border-foreground"
+                          classNames={{
+                            base: "bg-foreground text-background font-black text-sm",
+                            name: "font-black"
+                          }}
+                          src={session.user?.image || undefined}
+                          name={session.user?.name || "User"}
+                        />
+                      </button>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="Profile Actions" variant="flat" className="p-2">
+                      <DropdownItem key="profile" className="h-14 gap-2 opacity-100 cursor-default hover:bg-transparent">
+                        <p className="font-black text-[10px] text-foreground/30 uppercase tracking-widest">Logged in as</p>
+                        <p className="font-bold text-sm truncate">{session.user?.email}</p>
+                      </DropdownItem>
+                      <DropdownItem 
+                        key="logout" 
+                        color="danger" 
+                        onPress={() => signOut()} 
+                        startContent={<LogOut size={16} />}
+                        className="rounded-xl font-bold transition-colors"
+                      >
+                        {dict.common.signOut}
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                ) : (
+                  <Tooltip 
+                    content={dict.common.signIn} 
+                    showArrow 
+                    placement="top" 
+                    delay={0}
+                    closeDelay={0}
+                    classNames={{
+                      content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl shadow-xl",
+                      arrow: "bg-foreground"
+                    }}
+                  >
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      radius="full"
+                      className="h-12 w-12 flex items-center justify-center bg-background/50 hover:bg-background shadow-sm transition-all"
+                      onPress={() => signIn('casdoor')}
+                    >
+                      <LogIn size={20} className="text-foreground" />
+                    </Button>
+                  </Tooltip>
+                )}
+                <div className="w-px h-6 bg-foreground/10 mx-1" />
                 <Tooltip
                   content={
                     language === "zh" ? "Switch to English" : "切换到中文"
                   }
+                  showArrow
+                  placement="top"
+                  delay={0}
+                  classNames={{
+                    content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl shadow-xl",
+                    arrow: "bg-foreground"
+                  }}
                 >
                   <Button
                     variant="light"
                     radius="full"
-                    className="font-bold h-12 px-8 hover:bg-background/50 transition-colors"
+                    className="font-bold h-12 px-6 hover:bg-background/50 transition-colors"
                     onPress={() => setLanguage(language === "zh" ? "en" : "zh")}
                     startContent={
                       <Languages size={18} className="opacity-60" />
@@ -1046,11 +1151,18 @@ export default function VoiceChat({
                     {language === "zh" ? "English" : "中文"}
                   </Button>
                 </Tooltip>
-                <div className="w-px h-6 bg-foreground/10" />
+                <div className="w-px h-6 bg-foreground/10 mx-1" />
                 <Tooltip
                   content={
                     theme === "dark" ? "Switch to Light" : "Switch to Dark"
                   }
+                  showArrow
+                  placement="top"
+                  delay={0}
+                  classNames={{
+                    content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl shadow-xl",
+                    arrow: "bg-foreground"
+                  }}
                 >
                   <Button
                     isIconOnly
@@ -1069,6 +1181,14 @@ export default function VoiceChat({
                       ))}
                   </Button>
                 </Tooltip>
+              </div>
+
+              <button 
+                className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em] hover:text-foreground/40 transition-colors"
+                onClick={onAgreementOpen}
+              >
+                {dict.common.userAgreement}
+              </button>
               </div>
             </motion.div>
           </div>
@@ -1260,7 +1380,7 @@ export default function VoiceChat({
         backdrop="blur"
         size="md"
         classNames={{
-          wrapper: "items-center",
+          wrapper: "z-[1000] items-center",
           base: "w-[92vw] max-w-[720px] bg-background/85 backdrop-blur-2xl border border-foreground/10 shadow-2xl rounded-[2.5rem]",
           header: "border-none text-2xl font-black px-6 pt-6",
           body: "px-6 pb-6",
@@ -1349,6 +1469,68 @@ export default function VoiceChat({
               </ModalBody>
             </>
           )}
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isLimitReached}
+        onOpenChange={(open) => !open && setIsLimitReached(false)}
+        backdrop="blur"
+        classNames={{
+          wrapper: "z-[1000]",
+          base: "bg-background/80 backdrop-blur-2xl border border-foreground/10 rounded-[2.5rem] p-4",
+          header: "font-black text-2xl",
+        }}
+      >
+        <ModalContent>
+          <ModalHeader>Daily Limit Reached</ModalHeader>
+          <ModalBody className="pb-8">
+            <p className="text-lg font-medium opacity-60 mb-6">{dict.common.limitReached}</p>
+            <Button 
+              fullWidth 
+              size="lg" 
+              className="bg-foreground text-background font-black rounded-2xl h-16 text-xl shadow-xl shadow-foreground/10"
+              onPress={() => signIn('casdoor')}
+            >
+              {dict.common.signIn}
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      {/* User Agreement Modal */}
+      <Modal
+        isOpen={isAgreementOpen}
+        onOpenChange={onAgreementOpenChange}
+        backdrop="blur"
+        size="2xl"
+        scrollBehavior="inside"
+        classNames={{
+          wrapper: "z-[1000]",
+          base: "bg-background/85 backdrop-blur-2xl border border-foreground/10 rounded-[2.5rem]",
+          header: "border-none text-2xl font-black px-8 pt-8",
+          body: "px-8 pb-8",
+        }}
+      >
+        <ModalContent>
+          <ModalHeader>{dict.common.userAgreement}</ModalHeader>
+          <ModalBody className="text-sm leading-relaxed space-y-4">
+            <p className="font-bold text-lg">1. Introduction</p>
+            <p className="opacity-70">Welcome to NEGA. By using our service, you agree to these terms. Please read them carefully. NEGA provides AI-powered English learning assistance through voice and text interaction.</p>
+            
+            <p className="font-bold text-lg">2. Usage Limits</p>
+            <p className="opacity-70">To ensure service quality for everyone, guest users are limited to 3 conversation rounds per session. Registered users enjoy unlimited access. We reserve the right to modify these limits to protect our infrastructure.</p>
+            
+            <p className="font-bold text-lg">3. Privacy & Data</p>
+            <p className="opacity-70">Your voice and text inputs are processed to provide corrections and improvements. We use industry-standard encryption to protect your data. By using the service, you consent to the processing of your data for educational purposes.</p>
+            
+            <p className="font-bold text-lg">4. Intelligent Agent Persona</p>
+            <p className="opacity-70">NEGA's "Native English Grammar Assistant" persona uses informal language, slang, and authentic expressions to simulate real-world conversations. User discretion is advised.</p>
+            
+            <div className="pt-4 border-t border-foreground/10">
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-30 text-center">Last Updated: February 2026 • NEGA Team</p>
+            </div>
+          </ModalBody>
         </ModalContent>
       </Modal>
 

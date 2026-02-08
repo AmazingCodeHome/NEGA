@@ -227,10 +227,10 @@ npm run start
 
 ### 第二步：验证（部署后1-2小时）
 ```
-1. 访问 https://negaapp.com/robots.txt
+1. 访问 https://nega.inkcraft.cn/robots.txt
    ✓ 应能看到robots规则
 
-2. 访问 https://negaapp.com/sitemap.xml
+2. 访问 https://nega.inkcraft.cn/sitemap.xml
    ✓ 应能看到sitemap内容
 
 3. Google Search Console

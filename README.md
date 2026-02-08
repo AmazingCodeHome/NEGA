@@ -7,7 +7,7 @@
 
   [![GitHub](https://img.shields.io/badge/GitHub-negaapp-black?logo=github)](https://github.com/negaapp)
   [![Twitter](https://img.shields.io/badge/Twitter-@negaapp-1DA1F2?logo=twitter)](https://twitter.com/negaapp)
-  [![Website](https://img.shields.io/badge/Website-negaapp.com-0066FF)](https://negaapp.com)
+  [![Website](https://img.shields.io/badge/Website-nega.inkcraft.cn-0066FF)](https://nega.inkcraft.cn)
 </div>
 
 ## 🎯 About NEGA
@@ -124,8 +124,8 @@ RIVA_ASR_SERVICE=grpc://localhost:50051
 RIVA_TTS_SERVICE=grpc://localhost:50051
 
 # 应用配置
-NEXT_PUBLIC_APP_URL=https://negaapp.com
-NEXT_PUBLIC_API_URL=https://api.negaapp.com
+NEXT_PUBLIC_APP_URL=https://nega.inkcraft.cn
+NEXT_PUBLIC_API_URL=https://api.nega.inkcraft.cn
 ```
 
 ### API 端点
@@ -165,8 +165,8 @@ NEXT_PUBLIC_API_URL=https://api.negaapp.com
 
 ## 📞 联系方式
 
-- 🌐 **网站**: [negaapp.com](https://negaapp.com)
-- 📧 **邮件**: support@negaapp.com
+- 🌐 **网站**: [nega.inkcraft.cn](https://nega.inkcraft.cn)
+- 📧 **邮件**: support@nega.inkcraft.cn
 - 🐦 **Twitter**: [@negaapp](https://twitter.com/negaapp)
 - 💼 **LinkedIn**: [NEGA](https://linkedin.com/company/negaapp)
 - 🐙 **GitHub**: [github.com/negaapp](https://github.com/negaapp)

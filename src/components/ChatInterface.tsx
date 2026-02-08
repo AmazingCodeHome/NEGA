@@ -23,9 +23,13 @@ import {
   Copy,
   ThumbsUp,
   ThumbsDown,
-  Volume2
+  Volume2,
+  LogOut,
+  LogIn
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { useI18n } from '@/i18n/context';
 import { isBrowserSpeechRecognitionSupported, createLiveSpeechRecognition } from '@/lib/browser-speech';
 
 type Message = {
@@ -35,14 +39,23 @@ type Message = {
 };
 
 export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: () => void }) {
+  const { data: session } = useSession();
+  const { dict } = useI18n();
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: "Yo! NEGA in the building. I'm your real-deal English homie. We finna get your grammar on point and your slang sounding authentic. What's the move today?" }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isLimitReached, setIsLimitReached] = useState(false);
   const [useBrowserRecognition, setUseBrowserRecognition] = useState(false);
   
+  useEffect(() => {
+    if (session) {
+      setIsLimitReached(false);
+    }
+  }, [session]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -69,7 +82,7 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLimitReached) return;
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
@@ -82,7 +95,17 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [...messages.map(m => ({ role: m.role, content: m.content })), userMessage] }),
       });
+      
       const data = await response.json();
+
+      if (!response.ok) {
+        if (data.error === "LIMIT_REACHED") {
+          setIsLimitReached(true);
+          setMessages(prev => [...prev, { role: 'assistant', content: dict.common.limitReached }]);
+          return;
+        }
+        throw new Error(data.message || 'Failed to send message');
+      }
       
       if (data.content) {
         const assistantMessage: Message = { 
@@ -270,11 +293,45 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
           </div>
         </ScrollShadow>
 
-        <div className="mt-auto pt-4 space-y-1">
-            <Button variant="light" className="w-full justify-start gap-3 px-3 rounded-lg hover:bg-foreground/5 group">
-                <User size={18} className="text-foreground/40 group-hover:text-foreground" />
-                <span className="font-medium text-sm">My Profile</span>
-            </Button>
+        <div className="mt-auto pt-4 space-y-4">
+            {session ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-foreground/5 border border-foreground/5 transition-all hover:bg-foreground/[0.08] group/user">
+                  <Avatar 
+                    src={session.user?.image || undefined} 
+                    name={session.user?.name || 'User'} 
+                    size="sm"
+                    isBordered
+                    className="flex-shrink-0 border-2 border-foreground"
+                    classNames={{
+                      base: "bg-foreground text-background font-black",
+                      name: "font-black"
+                    }}
+                  />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-sm font-black truncate leading-tight">{session.user?.name}</span>
+                    <span className="text-[10px] text-foreground/40 truncate font-medium uppercase tracking-tighter">{session.user?.email}</span>
+                  </div>
+                </div>
+                <Button 
+                  variant="light" 
+                  className="w-full justify-start gap-3 h-11 px-3 rounded-xl hover:bg-danger/10 hover:text-danger group transition-all"
+                  onPress={() => signOut()}
+                >
+                  <LogOut size={18} className="text-foreground/40 group-hover:text-danger transition-colors" />
+                  <span className="font-bold text-sm">{dict.common.signOut}</span>
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="light" 
+                className="w-full justify-start gap-4 h-12 px-4 rounded-xl bg-foreground text-background hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-foreground/10 group mb-2"
+                onPress={() => signIn('casdoor')}
+              >
+                <LogIn size={20} className="group-hover:translate-x-0.5 transition-transform" />
+                <span className="font-black text-sm">{dict.common.signIn}</span>
+              </Button>
+            )}
             <Button variant="light" className="w-full justify-start gap-3 px-3 rounded-lg hover:bg-foreground/5 group">
                 <Settings size={18} className="text-foreground/40 group-hover:text-foreground" />
                 <span className="font-medium text-sm">Settings</span>
@@ -319,15 +376,51 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
                       </p>
                     </div>
 
-                    {msg.role === 'assistant' && (
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 mt-1">
-                        <Tooltip content="Copy"><Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg"><Copy size={16} /></Button></Tooltip>
-                        <Tooltip content="Listen"><Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg" onPress={() => playTTS(msg.content)}><Volume2 size={16} /></Button></Tooltip>
+                        <Tooltip 
+                          content="Copy" 
+                          showArrow 
+                          placement="top"
+                          classNames={{
+                            content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl",
+                            arrow: "bg-foreground"
+                          }}
+                        >
+                          <Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg"><Copy size={16} /></Button>
+                        </Tooltip>
+                        <Tooltip 
+                          content="Listen" 
+                          showArrow 
+                          placement="top"
+                          classNames={{
+                            content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl",
+                            arrow: "bg-foreground"
+                          }}
+                        >
+                          <Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg" onPress={() => playTTS(msg.content)}><Volume2 size={16} /></Button>
+                        </Tooltip>
                         <div className="w-[1px] h-4 bg-foreground/10 self-center mx-1" />
-                        <Tooltip content="Good response"><Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg"><ThumbsUp size={16} /></Button></Tooltip>
-                        <Tooltip content="Bad response"><Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg"><ThumbsDown size={16} /></Button></Tooltip>
-                      </div>
-                    )}
+                        <Tooltip 
+                          content="Good response" 
+                          showArrow 
+                          placement="top"
+                          classNames={{
+                            content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl",
+                            arrow: "bg-foreground"
+                          }}
+                        >
+                          <Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg"><ThumbsUp size={16} /></Button>
+                        </Tooltip>
+                        <Tooltip 
+                          content="Bad response" 
+                          showArrow 
+                          placement="top"
+                          classNames={{
+                            content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl",
+                            arrow: "bg-foreground"
+                          }}
+                        >
+                          <Button isIconOnly size="sm" variant="flat" className="bg-foreground/5 text-foreground/40 hover:text-foreground rounded-lg"><ThumbsDown size={16} /></Button>
+                        </Tooltip>
                   </div>
 
                   {msg.role === 'user' && (
@@ -362,11 +455,33 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
         {/* Input area */}
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background/90 to-transparent">
           <div className="max-w-3xl mx-auto">
-            <div className="relative flex flex-col gap-2 bg-foreground/5 p-2 rounded-[28px] border border-foreground/10 focus-within:border-foreground/20 transition-all backdrop-blur-xl">
+            <AnimatePresence>
+              {isLimitReached && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-4 p-4 rounded-2xl bg-foreground text-background shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4"
+                >
+                  <div className="flex flex-col">
+                    <p className="font-black text-sm">{dict.common.limitReached}</p>
+                    <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest">{dict.common.limitReachedSubtitle}</p>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="bg-background text-foreground font-black rounded-xl px-6"
+                    onPress={() => signIn('casdoor')}
+                  >
+                    {dict.common.signIn}
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className={`relative flex flex-col gap-2 bg-foreground/5 p-2 rounded-[28px] border border-foreground/10 focus-within:border-foreground/20 transition-all backdrop-blur-xl ${isLimitReached ? 'opacity-50 pointer-events-none' : ''}`}>
               <Textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Message NEGA..."
+                placeholder={isLimitReached ? "Limit reached..." : "Message NEGA..."}
+                isDisabled={isLimitReached}
                 minRows={1}
                 maxRows={12}
                 className="w-full"
@@ -384,7 +499,15 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
               
               <div className="flex justify-between items-center px-2 pb-1">
                 <div className="flex gap-1">
-                    <Tooltip content="Record audio">
+                    <Tooltip 
+                      content="Record audio" 
+                      showArrow 
+                      placement="top"
+                      classNames={{
+                        content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl",
+                        arrow: "bg-foreground"
+                      }}
+                    >
                         <Button 
                             isIconOnly 
                             radius="full"
@@ -395,7 +518,15 @@ export default function ChatInterface({ onSwitchToVoice }: { onSwitchToVoice?: (
                             {isRecording ? <Square size={20} fill="currentColor" /> : <Mic size={20} />}
                         </Button>
                     </Tooltip>
-                    <Tooltip content="Switch to Voice">
+                    <Tooltip 
+                      content="Switch to Voice" 
+                      showArrow 
+                      placement="top"
+                      classNames={{
+                        content: "bg-foreground text-background font-bold text-xs py-2 px-3 rounded-xl",
+                        arrow: "bg-foreground"
+                      }}
+                    >
                         <Button 
                             isIconOnly 
                             radius="full" 

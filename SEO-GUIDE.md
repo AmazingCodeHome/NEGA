@@ -4,7 +4,7 @@
 - **产品名称**: NEGA
 - **英文Slogan**: Your Native English Grammar Assistant
 - **中文Slogan**: 你的西海岸纯正口语教练
-- **网址**: https://negaapp.com
+- **网址**: https://nega.inkcraft.cn
 - **主要功能**: AI英文语法助手、口语教练、发音指导、语音对话
 
 ---
@@ -313,7 +313,7 @@ export const metadata = generateMetaTags({
 
 ## 📞 联系方式
 
-**Support**: support@negaapp.com  
+**Support**: support@nega.inkcraft.cn  
 **Twitter**: @negaapp  
 **GitHub**: github.com/negaapp
 

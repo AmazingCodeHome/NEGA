@@ -15,7 +15,13 @@
     "language": "语言",
     "dark": "深色",
     "light": "浅色",
-    "system": "系统"
+    "system": "系统",
+    "signIn": "前往登录/注册墨灵账户",
+    "signOut": "退出登录",
+    "limitNote": "登录以享受无限对话。访客每场对话限 3 轮。",
+    "userAgreement": "用户协议",
+    "limitReached": "访客对话次数已达上限（3轮）。请登录以享受无限次数的口语教练！",
+    "limitReachedSubtitle": "登录账号，让对话继续。"
   },
   "home": {
     "welcome": "欢迎使用 NEGA",

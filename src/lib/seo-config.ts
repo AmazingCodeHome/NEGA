@@ -35,9 +35,9 @@ export const seoConfig = {
   },
 
   urls: {
-    base: "https://negaapp.com",
-    en: "https://negaapp.com/en",
-    zh: "https://negaapp.com/zh",
+    base: "https://nega.inkcraft.cn",
+    en: "https://nega.inkcraft.cn/en",
+    zh: "https://nega.inkcraft.cn/zh",
   },
 
   socialLinks: {
@@ -65,7 +65,7 @@ export const seoConfig = {
   },
 
   ogImage: {
-    url: "https://negaapp.com/og-image.png",
+    url: "https://nega.inkcraft.cn/og-image.png",
     width: 1200,
     height: 630,
     alt: "NEGA - English Grammar Assistant",

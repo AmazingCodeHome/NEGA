@@ -13,6 +13,6 @@ Disallow: /admin/
 Crawl-delay: 1
 
 # Sitemaps
-Sitemap: https://negaapp.com/sitemap.xml
-Sitemap: https://negaapp.com/sitemap-en.xml
-Sitemap: https://negaapp.com/sitemap-zh.xml
+Sitemap: https://nega.inkcraft.cn/sitemap.xml
+Sitemap: https://nega.inkcraft.cn/sitemap-en.xml
+Sitemap: https://nega.inkcraft.cn/sitemap-zh.xml

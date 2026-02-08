@@ -149,9 +149,9 @@ SEO评分            > 90/100        待评估
 https://search.google.com/test/rich-results
 
 提交以下URL进行检查：
-- https://negaapp.com
-- https://negaapp.com/en
-- https://negaapp.com/zh
+- https://nega.inkcraft.cn
+- https://nega.inkcraft.cn/en
+- https://nega.inkcraft.cn/zh
 ```
 
 ### 3. 移动友好性测试
@@ -189,8 +189,8 @@ https://pagespeed.web.dev/
 <meta property="og:type" content="website" />
 <meta property="og:title" content="NEGA - Your Native English Grammar Assistant" />
 <meta property="og:description" content="..." />
-<meta property="og:image" content="https://negaapp.com/og-image.png" />
-<meta property="og:url" content="https://negaapp.com" />
+<meta property="og:image" content="https://nega.inkcraft.cn/og-image.png" />
+<meta property="og:url" content="https://nega.inkcraft.cn" />
 <meta property="og:site_name" content="NEGA" />
 ```
 
@@ -200,7 +200,7 @@ https://pagespeed.web.dev/
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="NEGA - English Grammar Assistant" />
 <meta name="twitter:description" content="..." />
-<meta name="twitter:image" content="https://negaapp.com/og-image.png" />
+<meta name="twitter:image" content="https://nega.inkcraft.cn/og-image.png" />
 ```
 
 ### 社交媒体分享测试工具
@@ -255,10 +255,10 @@ https://pagespeed.web.dev/
 2. **验证功能**：
    ```bash
    # 检查robots.txt
-   https://negaapp.com/robots.txt
+   https://nega.inkcraft.cn/robots.txt
    
    # 检查sitemap
-   https://negaapp.com/sitemap.xml
+   https://nega.inkcraft.cn/sitemap.xml
    
    # 检查结构化数据
    https://search.google.com/test/rich-results

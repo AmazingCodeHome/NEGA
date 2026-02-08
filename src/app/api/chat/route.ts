@@ -1,9 +1,26 @@
 import { NextResponse } from "next/server";
 import { getRandomApiKey, getRandomApiKeyForCerebras } from "@/lib/api-keys";
+import { auth } from "@/auth";
 
 export async function POST(req: Request) {
   try {
+    const session = await auth();
     const { messages, stream } = await req.json();
+
+    // Check message limit for unauthenticated users
+    if (!session) {
+      // Filter out system messages to count actual conversation rounds
+      const userMessages = messages.filter((m: any) => m.role === "user");
+      if (userMessages.length > 3) {
+        return NextResponse.json(
+          { 
+            error: "LIMIT_REACHED", 
+            message: "You've reached the 3-round limit for guests. Please sign in for unlimited coaching!" 
+          },
+          { status: 403 }
+        );
+      }
+    }
 
     // Define the system prompt for the authentic AAVE persona
     const systemPrompt = {
