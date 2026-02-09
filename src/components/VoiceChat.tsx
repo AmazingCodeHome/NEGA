@@ -36,11 +36,7 @@ import { Avatar } from "@heroui/react";
 import { LogOut, LogIn } from "lucide-react";
 import { isBrowserSpeechRecognitionSupported, createLiveSpeechRecognition } from "@/lib/browser-speech";
 
-export default function VoiceChat({
-  onSwitchToChat,
-}: {
-  onSwitchToChat?: () => void;
-}) {
+export default function VoiceChat() {
   const { dict, language, setLanguage } = useI18n();
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
@@ -896,7 +892,7 @@ export default function VoiceChat({
   };
 
   return (
-    <div className="h-screen w-full bg-background text-foreground flex flex-col relative overflow-hidden font-sans transition-colors duration-500">
+    <div className="h-[100dvh] w-full bg-background text-foreground flex flex-col relative overflow-hidden font-sans transition-colors duration-500">
       <AnimatePresence>
         {isTransitioning && (
           <motion.div
@@ -932,7 +928,23 @@ export default function VoiceChat({
       </AnimatePresence>
 
       {!hasStarted ? (
-        <div className="h-screen w-full bg-background text-foreground flex flex-col items-center justify-center p-6 transition-colors duration-500 mesh-gradient relative">
+        <div className="h-full w-full bg-background text-foreground flex flex-col items-center justify-center p-4 md:p-6 transition-colors duration-500 mesh-gradient relative">
+          <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20">
+            <motion.a
+              href="https://www.inkcraft.cn"
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2 group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center transition-transform group-hover:scale-110">
+                <span className="text-background font-black text-sm">I</span>
+              </div>
+              <span className="font-bold text-sm tracking-tight opacity-40 group-hover:opacity-100 transition-opacity whitespace-nowrap">InkCraft • 墨灵</span>
+            </motion.a>
+          </div>
+
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <motion.div
               animate={{
@@ -961,25 +973,25 @@ export default function VoiceChat({
             />
           </div>
 
-          <div className="w-full max-w-4xl space-y-16 text-center z-10">
+          <div className="w-full max-w-4xl space-y-8 md:space-y-16 text-center z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-6"
+              className="space-y-4 md:space-y-6"
             >
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                className="inline-block px-4 py-1.5 mb-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-bold tracking-wide uppercase"
+                className="inline-block px-3 py-1 mb-1 md:mb-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] md:text-sm font-bold tracking-wide uppercase"
               >
                 v1.0 is here
               </motion.div>
-              <h1 className="text-8xl md:text-9xl font-black tracking-tighter bg-linear-to-b from-foreground via-foreground to-foreground/40 bg-clip-text text-transparent leading-[0.9]">
+              <h1 className="text-6xl md:text-9xl font-black tracking-tighter bg-linear-to-b from-foreground via-foreground to-foreground/40 bg-clip-text text-transparent leading-[0.9]">
                 {dict.common.title}
               </h1>
-              <p className="text-xl md:text-2xl text-foreground/60 font-medium max-w-xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-2xl text-foreground/60 font-medium max-w-xl mx-auto leading-relaxed px-4 md:px-0">
                 {dict.common.description}
               </p>
             </motion.div>
@@ -988,7 +1000,7 @@ export default function VoiceChat({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-0"
             >
               {[
                 {
@@ -1012,13 +1024,13 @@ export default function VoiceChat({
                   className="bg-foreground/5 hover:bg-foreground/[0.08] border-none transition-colors backdrop-blur-sm"
                   shadow="none"
                 >
-                  <CardBody className="flex flex-col items-center p-8 space-y-4">
-                    <div className="p-3 rounded-2xl bg-background/50 shadow-sm">
+                  <CardBody className="flex flex-col items-center p-6 md:p-8 space-y-3 md:space-y-4">
+                    <div className="p-2 md:p-3 rounded-2xl bg-background/50 shadow-sm">
                       {item.icon}
                     </div>
-                    <div className="space-y-1">
-                      <h3 className="text-base font-bold">{item.text}</h3>
-                      <p className="text-xs text-foreground/40 font-medium">
+                    <div className="space-y-0.5 md:space-y-1">
+                      <h3 className="text-sm md:text-base font-bold">{item.text}</h3>
+                      <p className="text-[10px] md:text-xs text-foreground/40 font-medium">
                         {item.desc}
                       </p>
                     </div>
@@ -1031,12 +1043,12 @@ export default function VoiceChat({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col items-center space-y-8"
+              className="flex flex-col items-center space-y-6 md:space-y-8 px-4"
             >
               <Button
                 size="lg"
                 radius="full"
-                className="group relative w-full max-w-md h-20 bg-foreground text-background text-2xl font-black hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
+                className="group relative w-full max-w-md h-16 md:h-20 bg-foreground text-background text-xl md:text-2xl font-black hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
                 onPress={startSession}
               >
                 <motion.div
@@ -1044,7 +1056,7 @@ export default function VoiceChat({
                   animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
-                <span className="relative z-10 flex items-center gap-4">
+                <span className="relative z-10 flex items-center gap-3 md:gap-4">
                   {dict.common.startSession}
                   <motion.div
                     animate={{ x: [0, 8, 0] }}
@@ -1059,17 +1071,17 @@ export default function VoiceChat({
                 </span>
               </Button>
 
-              <div className="flex flex-col items-center space-y-6">
+              <div className="flex flex-col items-center space-y-4 md:space-y-6">
                 {!session && (
                   <motion.p 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] bg-foreground/5 px-6 py-2.5 rounded-full border border-foreground/5"
+                    className="text-[9px] md:text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] bg-foreground/5 px-4 md:px-6 py-2 md:py-2.5 rounded-full border border-foreground/5"
                   >
                     🚀 {dict.common.limitNote}
                   </motion.p>
                 )}
-                <div className="flex items-center gap-4 p-2 bg-foreground/5 rounded-full backdrop-blur-md border border-foreground/5 shadow-inner">
+                <div className="flex items-center gap-2 md:gap-4 p-1.5 md:p-2 bg-foreground/5 rounded-full backdrop-blur-md border border-foreground/5 shadow-inner">
                 {session ? (
                   <Dropdown placement="top" offset={12} className="bg-background/80 backdrop-blur-xl border border-foreground/10 rounded-2xl shadow-2xl">
                     <DropdownTrigger>
@@ -1142,7 +1154,7 @@ export default function VoiceChat({
                   <Button
                     variant="light"
                     radius="full"
-                    className="font-bold h-12 px-6 hover:bg-background/50 transition-colors"
+                    className="font-bold h-10 md:h-12 px-4 md:px-6 hover:bg-background/50 transition-colors"
                     onPress={() => setLanguage(language === "zh" ? "en" : "zh")}
                     startContent={
                       <Languages size={18} className="opacity-60" />
@@ -1244,7 +1256,7 @@ export default function VoiceChat({
                 >
                   {/* Core Circle */}
                   <motion.div
-                    className="w-64 h-64 rounded-full bg-foreground relative z-10 shadow-2xl flex items-center justify-center overflow-hidden"
+                    className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-foreground relative z-10 shadow-2xl flex items-center justify-center overflow-hidden"
                     animate={{
                       scale:
                         1 + smoothedLevel * 0.35 + smoothedAiBands[1] * 0.15,
@@ -1274,7 +1286,7 @@ export default function VoiceChat({
                   {[1, 1.4, 1.8].map((s, i) => (
                     <motion.div
                       key={i}
-                      className="absolute w-64 h-64 rounded-full bg-foreground/10"
+                      className="absolute w-48 h-48 md:w-64 md:h-64 rounded-full bg-foreground/10"
                       animate={{
                         scale:
                           s +
@@ -1294,8 +1306,8 @@ export default function VoiceChat({
               )}
             </AnimatePresence>
 
-            <div className="absolute bottom-24 flex flex-col items-center space-y-6">
-              <p className="text-foreground/30 font-black text-sm tracking-[0.3em] uppercase">
+            <div className="absolute bottom-20 md:bottom-24 flex flex-col items-center space-y-4 md:space-y-6">
+              <p className="text-foreground/30 font-black text-xs md:text-sm tracking-[0.3em] uppercase">
                 {mode === "listening"
                   ? vadStateRef.current.isSpeaking
                     ? dict.common.listening
@@ -1309,7 +1321,7 @@ export default function VoiceChat({
                   initial={{ scale: 0 }}
                   animate={{ scale: [1, 1.5, 1], opacity: [1, 0.8, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.8)]"
+                  className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.8)]"
                 />
               )}
             </div>
@@ -1322,10 +1334,10 @@ export default function VoiceChat({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="absolute bottom-48 left-0 right-0 px-8 flex justify-center pointer-events-none z-20"
+                className="absolute bottom-40 md:bottom-48 left-0 right-0 px-6 md:px-8 flex justify-center pointer-events-none z-20"
               >
-                <div className="max-w-xl bg-background/40 backdrop-blur-3xl border border-foreground/5 px-10 py-6 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
-                  <p className="text-xl md:text-2xl font-bold text-center leading-relaxed tracking-tight text-foreground/90">
+                <div className="max-w-xl bg-background/40 backdrop-blur-3xl border border-foreground/5 px-6 md:px-10 py-4 md:py-6 rounded-[2rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
+                  <p className="text-lg md:text-2xl font-bold text-center leading-relaxed tracking-tight text-foreground/90">
                     {currentSubtitle}
                   </p>
                 </div>
@@ -1333,16 +1345,16 @@ export default function VoiceChat({
             )}
           </AnimatePresence>
 
-          <div className="h-40 w-full px-12 pb-16 flex items-center justify-center gap-8 z-10">
+          <div className="h-32 md:h-40 w-full px-6 md:px-12 pb-8 md:pb-16 flex items-center justify-center gap-4 md:gap-8 z-10">
             <Tooltip content={dict.common.settings}>
               <Button
                 isIconOnly
                 variant="flat"
                 radius="full"
-                className="bg-foreground/5 hover:bg-foreground/10 text-foreground w-16 h-16 flex items-center justify-center p-0 min-w-0 transition-all hover:scale-110 active:scale-90"
+                className="bg-foreground/5 hover:bg-foreground/10 text-foreground w-14 h-14 md:w-16 md:h-16 flex items-center justify-center p-0 min-w-0 transition-all hover:scale-110 active:scale-90"
                 onPress={onOpen}
               >
-                <Settings size={26} />
+                <Settings size={22} className="md:size-[26px]" />
               </Button>
             </Tooltip>
 
@@ -1351,10 +1363,10 @@ export default function VoiceChat({
                 isIconOnly
                 radius="full"
                 variant="solid"
-                className="w-20 h-20 p-0 min-w-0 flex items-center justify-center text-white bg-red-500 hover:bg-red-600 shadow-xl shadow-red-500/20 hover:scale-110 active:scale-95 transition-all "
+                className="w-16 h-16 md:w-20 md:h-20 p-0 min-w-0 flex items-center justify-center text-white bg-red-500 hover:bg-red-600 shadow-xl shadow-red-500/20 hover:scale-110 active:scale-95 transition-all "
                 onPress={endSession}
               >
-                <X size={32} color="white" strokeWidth={3} />
+                <X size={28} className="md:size-8" color="white" strokeWidth={3} />
               </Button>
             </Tooltip>
 
@@ -1363,10 +1375,10 @@ export default function VoiceChat({
                 isIconOnly
                 variant={showSubtitles ? "solid" : "flat"}
                 radius="full"
-                className={`w-16 h-16 flex items-center justify-center p-0 min-w-0 transition-all hover:scale-110 active:scale-90 ${showSubtitles ? "bg-foreground text-background" : "bg-foreground/5 text-foreground hover:bg-foreground/10"}`}
+                className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center p-0 min-w-0 transition-all hover:scale-110 active:scale-90 ${showSubtitles ? "bg-foreground text-background" : "bg-foreground/5 text-foreground hover:bg-foreground/10"}`}
                 onPress={() => setShowSubtitles(!showSubtitles)}
               >
-                <Captions size={26} />
+                <Captions size={22} className="md:size-[26px]" />
               </Button>
             </Tooltip>
           </div>
@@ -1430,6 +1442,21 @@ export default function VoiceChat({
                         startContent={<Moon size={18} />}
                       >
                         {dict.common.dark}
+                      </Button>
+                      <Button
+                        fullWidth
+                        variant={
+                          mounted && theme === "system" ? "solid" : "light"
+                        }
+                        onPress={() => setTheme("system")}
+                        className={
+                          mounted && theme === "system"
+                            ? "bg-foreground text-background shadow-sm font-bold rounded-xl"
+                            : "hover:bg-foreground/5 font-bold rounded-xl"
+                        }
+                        startContent={<Settings size={18} />}
+                      >
+                        {dict.common.system}
                       </Button>
                     </div>
                   </div>

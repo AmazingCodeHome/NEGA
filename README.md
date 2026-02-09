@@ -61,7 +61,6 @@ src/
 │   ├── manifest.ts     # Web App清单
 │   └── page.tsx        # 首页
 ├── components/         # React组件
-│   ├── ChatInterface.tsx
 │   └── VoiceChat.tsx
 ├── lib/               # 工具函数
 │   ├── seo-config.ts  # SEO全局配置
