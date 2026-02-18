@@ -95,7 +95,7 @@ export async function POST(req: Request) {
       else if (mimeType.includes('webm')) encoding = 'OGGOPUS';
       else encoding = 'ENCODING_UNSPECIFIED';
     }
-    const languageCode = process.env.RIVA_ASR_LANGUAGE_CODE || 'en-US';
+    const languageCode = (formData.get('languageCode') as string) || process.env.RIVA_ASR_LANGUAGE_CODE || 'en-US';
     const sampleRateHz = Number(process.env.RIVA_ASR_SAMPLE_RATE_HZ || 16000); 
     const modelName = process.env.RIVA_ASR_MODEL || '';
 

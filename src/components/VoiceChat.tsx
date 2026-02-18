@@ -248,7 +248,9 @@ export default function VoiceChat() {
             // Don't disable it entirely, just log the error
           },
           {
-            lang: 'en-US',
+            lang: selectedCourse === "japanese" ? "ja-JP" : 
+                  selectedCourse === "russian" ? "ru-RU" : 
+                  selectedCourse === "korean" ? "ko-KR" : "en-US",
             continuous: true,
             interimResults: true,
           }
@@ -515,6 +517,9 @@ export default function VoiceChat() {
         const formData = new FormData();
         formData.append("file", audioBlob, "rec.wav");
         formData.append("mimeType", "audio/wav");
+        formData.append("languageCode", selectedCourse === "japanese" ? "ja-JP" : 
+                                       selectedCourse === "russian" ? "ru-RU" : 
+                                       selectedCourse === "korean" ? "ko-KR" : "en-US");
 
         // 1. Transcribe
         console.debug("Browser recognition not available/failed, using remote API...");
@@ -1107,7 +1112,15 @@ export default function VoiceChat() {
                   </DropdownTrigger>
                   <DropdownMenu 
                     aria-label="Course selection"
-                    onAction={(key) => setSelectedCourse(key as string)}
+                    onAction={(key) => {
+                      const course = key as string;
+                      setSelectedCourse(course);
+                      if (course === "japanese") setSelectedVoice("ja-JP-NanamiNeural");
+                      else if (course === "russian") setSelectedVoice("ru-RU-SvetlanaNeural");
+                      else if (course === "korean") setSelectedVoice("ko-KR-SunHiNeural");
+                      else if (course === "street" || course === "interview") setSelectedVoice("en-US-AndrewMultilingualNeural");
+                      else if (course === "travel") setSelectedVoice("en-US-AvaNeural");
+                    }}
                     selectedKeys={[selectedCourse]}
                     selectionMode="single"
                     className="p-1"
@@ -1118,6 +1131,9 @@ export default function VoiceChat() {
                       selectedIcon: "text-blue-500",
                     }}
                   >
+                    <DropdownItem key="japanese" description={dict.courses.japaneseDesc}>{dict.courses.japanese}</DropdownItem>
+                    <DropdownItem key="russian" description={dict.courses.russianDesc}>{dict.courses.russian}</DropdownItem>
+                    <DropdownItem key="korean" description={dict.courses.koreanDesc}>{dict.courses.korean}</DropdownItem>
                     <DropdownItem key="street" description={dict.courses.streetDesc}>{dict.courses.street}</DropdownItem>
                     <DropdownItem key="interview" description={dict.courses.interviewDesc}>{dict.courses.interview}</DropdownItem>
                     <DropdownItem key="travel" description={dict.courses.travelDesc}>{dict.courses.travel}</DropdownItem>
@@ -1138,7 +1154,11 @@ export default function VoiceChat() {
                         <span className="text-[9px] uppercase tracking-[0.2em] opacity-40 font-black">{dict.common.voice}</span>
                         <span className="text-sm tracking-tight text-left">
                           {selectedVoice === "en-US-AndrewMultilingualNeural" ? dict.voices.andrew : 
-                           selectedVoice === "en-US-AvaNeural" ? dict.voices.emma : dict.voices.brian}
+                           selectedVoice === "en-US-AvaNeural" ? dict.voices.emma : 
+                           selectedVoice === "en-GB-SoniaNeural" ? dict.voices.brian :
+                           selectedVoice === "ja-JP-NanamiNeural" ? dict.voices.nanami :
+                           selectedVoice === "ru-RU-SvetlanaNeural" ? dict.voices.svetlana :
+                           dict.voices.sunhi}
                         </span>
                       </div>
                     </Button>
@@ -1158,6 +1178,9 @@ export default function VoiceChat() {
                     <DropdownItem key="en-US-AndrewMultilingualNeural">{dict.voices.andrew}</DropdownItem>
                     <DropdownItem key="en-US-AvaNeural">{dict.voices.emma}</DropdownItem>
                     <DropdownItem key="en-GB-SoniaNeural">{dict.voices.brian}</DropdownItem>
+                    <DropdownItem key="ja-JP-NanamiNeural">{dict.voices.nanami}</DropdownItem>
+                    <DropdownItem key="ru-RU-SvetlanaNeural">{dict.voices.svetlana}</DropdownItem>
+                    <DropdownItem key="ko-KR-SunHiNeural">{dict.voices.sunhi}</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
               </div>

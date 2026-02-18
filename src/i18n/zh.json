@@ -28,6 +28,12 @@
     "visitInkCraft": "访问墨灵主站"
   },
   "courses": {
+    "japanese": "地道日语",
+    "japaneseDesc": "动漫、街头与文化探讨",
+    "russian": "战斗俄语",
+    "russianDesc": "习语、俚语与硬核俄语",
+    "korean": "恩情朝鲜语",
+    "koreanDesc": "豪迈、革命化的主体韩语练习",
     "street": "街头美语",
     "streetDesc": "俚语、非裔美语与地道表达",
     "interview": "职场面试",
@@ -36,9 +42,12 @@
     "travelDesc": "实用的旅游情景口语练习"
   },
   "voices": {
-    "andrew": "安德鲁 (男声)",
-    "emma": "艾玛 (女声)",
-    "brian": "布莱恩 (深沉)"
+    "andrew": "安德鲁 (美语)",
+    "emma": "艾玛 (美语)",
+    "brian": "布莱恩 (英音)",
+    "nanami": "七海 (日语)",
+    "svetlana": "斯维特拉娜 (俄语)",
+    "sunhi": "善熙 (朝鲜语)"
   },
   "home": {
     "welcome": "欢迎使用 NEGA",

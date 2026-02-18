@@ -28,6 +28,12 @@
     "visitInkCraft": "Visit InkCraft"
   },
   "courses": {
+    "japanese": "Japanese Core",
+    "japaneseDesc": "Anime, Street & Culture",
+    "russian": "Russian Rush",
+    "russianDesc": "Idioms, Slang & Direct Russian",
+    "korean": "Enqing Korean",
+    "koreanDesc": "Revolutionary & Formal Korean",
     "street": "Street English",
     "streetDesc": "Slang, AAVE & Authentic vibe",
     "interview": "Job Interview",
@@ -36,9 +42,12 @@
     "travelDesc": "Practical situational English"
   },
   "voices": {
-    "andrew": "Andrew (Male)",
-    "emma": "Emma (Female)",
-    "brian": "Brian (Deep)"
+    "andrew": "Andrew (En-US)",
+    "emma": "Emma (En-US)",
+    "brian": "Brian (En-GB)",
+    "nanami": "Nanami (Japanese)",
+    "svetlana": "Svetlana (Russian)",
+    "sunhi": "Sun-Hi (Korean Voice)"
   },
   "home": {
     "welcome": "Welcome to NEGA",
